@@ -1,0 +1,4 @@
+fastapi==0.112.0
+uvicorn==0.30.5
+# itsdangerous==2.2.0
+fastapi-cache2==0.2.2
