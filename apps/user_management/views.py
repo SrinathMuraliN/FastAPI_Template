@@ -6,14 +6,18 @@ interacting with the models, and returning the appropriate templates or JSON dat
 """
 
 import logging
+
 from fastapi import APIRouter, HTTPException
-from .service import get_user_service
+from fastapi_cache.decorator import cache
+
+from apps.user_management.service import get_user_service
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
 
 @router.get("/get_user")
+@cache(namespace="login", expire=60)
 async def get_users():
     """
     Function to fetch user list
@@ -28,6 +32,7 @@ async def get_users():
 
 
 @router.get("/items/{item_id}")
+@cache(namespace="login", expire=60)
 def read_item(item_id: int, q: str = None):
     """
     Retrieve an item by ID. If there is no optional
