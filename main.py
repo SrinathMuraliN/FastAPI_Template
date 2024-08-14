@@ -3,6 +3,7 @@ from starlette.middleware.sessions import SessionMiddleware
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from apps.user_management import views
+from apps.user_management.db_connection import Base, engine
 
 
 def setup_app():
@@ -22,6 +23,8 @@ def setup_app():
 
 
 app = setup_app()
+
+Base.metadata.create_all(bind=engine)
 
 # Including the router
 app.include_router(views.router, prefix="/api", tags=["Login"])
