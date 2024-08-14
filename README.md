@@ -1,2 +1,2 @@
-# GHD_Template
+# FastAPI Template
 Fastapi template for GHD Project
