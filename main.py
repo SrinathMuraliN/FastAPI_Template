@@ -10,7 +10,7 @@ from fastapi_cache import FastAPICache
 from fastapi_cache.backends.inmemory import InMemoryBackend
 from starlette.middleware.sessions import SessionMiddleware
 
-from apps.user_management import views
+from apps.views import user_management_views
 
 logger = logging.getLogger(__name__)
 
@@ -66,15 +66,21 @@ async def authentication_middleware(request: Request, call_next):
                     response = await call_next(request)
                     return response
             except User.DoesNotExist as exc:
-                raise HTTPException(status_code=404, detail="Authentication \
-                                    Error") from exc
+                raise HTTPException(
+                    status_code=404,
+                    detail="Authentication \
+                                    Error",
+                ) from exc
 
         except Exception as exc:
-            raise HTTPException(status_code=404, detail="Authentication \
-                                Error") from exc
+            raise HTTPException(
+                status_code=404,
+                detail="Authentication \
+                                Error",
+            ) from exc
     else:
         raise HTTPException(status_code=404, detail="No Bearer Token")
 
 
 # Including the router
-app.include_router(views.router, prefix="/api", tags=["Login"])
+app.include_router(user_management_views.router, prefix="/api", tags=["Login"])

@@ -10,7 +10,7 @@ import logging
 from fastapi import APIRouter, HTTPException
 from fastapi_cache.decorator import cache
 
-from apps.user_management.service import get_user_service
+from apps.services.user_management_service import get_user_service
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
