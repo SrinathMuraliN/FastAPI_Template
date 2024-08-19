@@ -7,7 +7,8 @@ interacting with the models, and returning the appropriate templates or JSON dat
 
 import logging
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
+from fastapi.security import HTTPBearer
 from fastapi_cache.decorator import cache
 
 from apps.services.user_management_service import get_user_service
@@ -18,7 +19,7 @@ router = APIRouter()
 
 @router.get("/get_user")
 @cache(namespace="login", expire=60)
-async def get_users():
+async def get_users(authorization: str = Depends(HTTPBearer)):
     """
     Function to fetch user list
     """
@@ -33,7 +34,7 @@ async def get_users():
 
 @router.get("/items/{item_id}")
 @cache(namespace="login", expire=60)
-def read_item(item_id: int, q: str = None):
+def read_item(item_id: int, q: str = None, authorization: str = Depends(HTTPBearer)):
     """
     Retrieve an item by ID. If there is no optional
     String Provided, In the return dict, It retruns the value as None
