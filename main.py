@@ -48,6 +48,9 @@ async def authentication_middleware(request: Request, call_next):
     """
     Function to add authentication middleware
     """
+    if request.url.path == app.docs_url or request.url.path == app.openapi_url:
+        response = await call_next(request)
+        return response
     authorization_header = request.headers.get("authorization", "")
     if authorization_header.startswith("Bearer "):
         token = authorization_header.split(" ")[1]
