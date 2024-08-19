@@ -1,12 +1,19 @@
 from pydantic import BaseModel
+from typing import Optional
 
 
-class ItemCreate(BaseModel):
+class UserCreate(BaseModel):
     name: str
-    description: str
+    email_id: str
+    role : str
+    
+class Userupdate(BaseModel):
+    name:Optional[str] = None
+    email_id:Optional[str] = None
+    role :Optional[str] =None
 
 
-class ItemRead(ItemCreate):
+class UserRead(UserCreate):
     id: int
 
     class Config:

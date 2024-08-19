@@ -6,13 +6,13 @@ interacting with the models, and returning the appropriate templates or JSON dat
 """
 
 import logging
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException,Path
 from .service import get_user_service
 from sqlalchemy.orm import Session
 from apps.user_management.repository.repository import ItemRepository
 from apps.user_management.db_connection import get_db
 from apps.user_management.models.models import Item
-from apps.user_management.schemas.ItemSchema import ItemCreate, ItemRead
+from apps.user_management.schemas.ItemSchema import UserCreate,Userupdate, UserRead
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -65,7 +65,24 @@ def read_item_name(item_id: int, db: Session = Depends(get_db)):
     return db_item
 
 
-@router.post("/items/", response_model=ItemRead)
-def create_item(item: ItemCreate, db: Session = Depends(get_db)):
-    db_item = ItemRepository.create_item(db, item)
+@router.post("/user/", response_model=UserCreate)
+def create_user(item: UserCreate, db: Session = Depends(get_db)):
+    db_item = ItemRepository.create_user(db, item)
     return db_item
+
+@router.put("/user/{user_id}", response_model=Userupdate)
+def update_user(user:Userupdate,db: Session = Depends(get_db),user_id :int = Path(gt =0)):
+    db_item = ItemRepository.update_user(user_id,db,user)
+    if db_item is None:
+        raise HTTPException(status_code= 404,detail="Item not found ")
+    return db_item
+
+@router.delete("/user/{user_id}")
+def delete_user(db: Session = Depends(get_db),user_id :int = Path(gt =0)):
+    db_item = ItemRepository.delete_user(user_id,db)
+    if db_item is None:
+        raise HTTPException(status_code= 404,detail="Item not found ")
+    return db_item
+
+
+
