@@ -5,18 +5,28 @@ class DashboardAPI(HttpUser):
 
     @task
     def create_userAPI(self):
-        self.client.get(
-            "api/dashboard/chocolate/predicted/dropdown?Manufacturer=FERRERO&region=UK"
+        self.client.post(
+            "/user/",
+            json={
+                "name": "John Doe",
+                "email": "johndoe@example.com"
+                
+            },
         )
 
     @task
     def update_userAPI(self):
-        self.client.get(
-            "api/dashboard/chocolate/predicted/output?EB=EQ%20Lbs&Manufacturer=BLISS&Brand=BLISS&Super%20Variant=100KCAL%20OR%20LESS&Variant=95KCAL&Sub%20Segment=BOXED&Type=AFTER%20DINNER&Type%20of%20Launch=A&region=UK"
+        user_id = 1  
+        self.client.put(
+            f"/user/{user_id}",
+            json={
+                "name": "Jane Doe",
+                "email": "janedoe@example.com"
+               
+            },
         )
 
     @task
     def delete_userAPI(self):
-        self.client.get(
-            "api/dashboard/chocolate/historical/alldata?time_period=&level=&EB=EQ%20Lbs&region=UK"
-        )
+        user_id = 1  
+        self.client.delete(f"/user/{user_id}")
