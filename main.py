@@ -9,6 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.inmemory import InMemoryBackend
 from starlette.middleware.sessions import SessionMiddleware
+from utility.db_connection import Base, engine
 
 from apps.views import user_management_views
 
@@ -41,6 +42,8 @@ def setup_app():
 
 
 app = setup_app()
+
+Base.metadata.create_all(bind=engine)
 
 
 # @app.middleware("http")
