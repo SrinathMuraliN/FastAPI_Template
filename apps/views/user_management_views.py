@@ -29,7 +29,7 @@ async def get_users(authorization: str = Depends(HTTPBearer)):
     """
     try:
         logger.info("Start of the view")
-        user_lsit = get_user_service()
+        user_lsit = await get_user_service()
         logger.info("End of the view")
         return user_lsit
     except ValueError as e:
@@ -38,7 +38,7 @@ async def get_users(authorization: str = Depends(HTTPBearer)):
 
 @router.get("/items/{item_id}")
 @cache(namespace="login", expire=60)
-def read_item(item_id: int, q: str = None, authorization: str = Depends(HTTPBearer)):
+async def read_item(item_id: int, q: str = None, authorization: str = Depends(HTTPBearer)):
     """
     Retrieve an item by ID. If there is no optional
     String Provided, In the return dict, It retruns the value as None
@@ -62,7 +62,7 @@ def read_item(item_id: int, q: str = None, authorization: str = Depends(HTTPBear
 
 
 @router.get("/db_item/{item_id}")
-def read_item_name(
+async def read_item_name(
     item_id: int,
     db: Session = Depends(get_db),
     authorization: str = Depends(HTTPBearer),
@@ -82,14 +82,14 @@ def read_item_name(
         ValueError: If the `id` provided is not a positive integer.
     """
     logger.info("api service is started")
-    db_item = ItemRepository.get_item(db, item_id)
+    db_item = await ItemRepository.get_item(db, item_id)
     if db_item is None:
         raise HTTPException(status_code=404, detail="Item not found")
     return db_item
 
 
 @router.post("/db_items/", response_model=ItemRead)
-def create_item(
+async def create_item(
     item: ItemCreate,
     db: Session = Depends(get_db),
     authorization: str = Depends(HTTPBearer),
@@ -107,5 +107,5 @@ def create_item(
         HTTPException: If the item_id is invalid.
         ValueError: If the `id` provided is not a positive integer.
     """
-    db_item = ItemRepository.create_item(db, item)
+    db_item = await ItemRepository.create_item(db, item)
     return db_item
