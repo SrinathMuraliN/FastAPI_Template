@@ -17,7 +17,7 @@ class BaseRepository:
         self._res = res
         self._db = db
 
-    def create(self, values: dict = {}) -> dict:
+    async def create(self, values: dict = {}) -> dict:
         """
         The function creates a new object using the given values and adds it
         to the database.
@@ -33,7 +33,7 @@ class BaseRepository:
         self._db.session.commit()
         return new_obj
 
-    def filter(self, query, name, value, model) -> dict:
+    async def filter(self, query, name, value, model) -> dict:
         """
         The function filters a query based on a given name, value, and model.
         :param query: The `query` parameter is an SQLAlchemy query object. It
@@ -61,7 +61,7 @@ class BaseRepository:
             operator = getattr(column, "__eq__")
         return query.filter(operator(value))
 
-    def query(self, filters: dict = {}) -> dict:
+    async def query(self, filters: dict = {}) -> dict:
         """
         The function takes in a dictionary of filters, applies them to a
         database query, and returns the query.
@@ -78,7 +78,7 @@ class BaseRepository:
                 query = self.filter(query, filter, filters[filter], self._model)
         return query
 
-    def get_all(self, filters: dict = {}) -> List[dict]:
+    async def get_all(self, filters: dict = {}) -> List[dict]:
         """
         The function `get_all` takes in a dictionary of filters, creates a
         query using those filters and returns all the results of the query.
@@ -92,7 +92,7 @@ class BaseRepository:
         query = self.query(filters=filters)
         return query.all()
 
-    def get_first(self, filters: dict = {}) -> dict:
+    async def get_first(self, filters: dict = {}) -> dict:
         """
         The function `get_first` returns the first result from a query based
         on the given filters.
@@ -105,7 +105,7 @@ class BaseRepository:
         """
         return self.query(filters=filters).first()
 
-    def delete(self, filters: dict = {}) -> int:
+    async def delete(self, filters: dict = {}) -> int:
         """
         The function deletes records from a database table based on the
         provided filters and returns the number of deleted records.
@@ -124,7 +124,7 @@ class BaseRepository:
         self._db.session.commit()
         return is_deleted
 
-    def update(self, id: int, values: dict = {}) -> dict | bool:
+    async def update(self, id: int, values: dict = {}) -> dict | bool:
         """
         The function updates a record in the database with the given id and
         values.
