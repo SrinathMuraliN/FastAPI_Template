@@ -8,7 +8,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def get_user_service():
+async def get_user_service():
     """
     Retrieve user list from the data.
 
@@ -16,7 +16,7 @@ def get_user_service():
         item_id (int): The ID of the item.
 
     Returns:
-        dict: A dictionary containing the user emails and theri
+        dict: A dictionary containing the user emails and their
         respective roles.
 
     Raises:
