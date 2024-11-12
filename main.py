@@ -2,7 +2,7 @@ import logging
 import os
 from contextlib import asynccontextmanager
 from typing import AsyncIterator
-
+from pathlib import Path
 from aad_token_verify import get_verified_payload
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -10,6 +10,8 @@ from fastapi_cache import FastAPICache
 from fastapi_cache.backends.inmemory import InMemoryBackend
 from starlette.middleware.sessions import SessionMiddleware
 from utility.db_connection import Base, engine
+from fastapi.middleware.gzip import GZipMiddleware
+from utility.db_connection import SessionLocal
 
 from apps.views import user_management_views
 
@@ -24,12 +26,16 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
     FastAPICache.init(InMemoryBackend())
     yield
 
+    if SessionLocal._engine is None:
+        await SessionLocal.close()
+
 
 def setup_app():
     """
     Function to setup fastapi application
     """
     fastapi_app = FastAPI(lifespan=lifespan)
+    fastapi_app.add_middleware(GZipMiddleware, minimum_size=1000, compresslevel=5)
     fastapi_app.add_middleware(SessionMiddleware, secret_key="fastapi")
     fastapi_app.add_middleware(
         CORSMiddleware,
@@ -42,11 +48,10 @@ def setup_app():
 
 
 app = setup_app()
+BASE_DIR = Path("/app")
 
-Base.metadata.create_all(bind=engine)
 
-
-# @app.middleware("http")
+@app.middleware("http")
 async def authentication_middleware(request: Request, call_next):
     """
     Function to add authentication middleware
